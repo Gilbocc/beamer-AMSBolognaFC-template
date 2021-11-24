@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  vscode:
+    build: .
+    image: latexdevcontainer
+    volumes:
+      - ../:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/.ssh:/home/vscode/.ssh
+      - ~/.ssh:/root/.ssh
+    environment:
+      - TZ=
+    entrypoint: zsh -c "while sleep 1000; do :; done"
