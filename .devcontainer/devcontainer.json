@@ -32,5 +32,6 @@
             "*.tex": "latex"
         }
     },
-    "postCreateCommand": "git submodule update --init --recursive && cp -r .style/* ./ && git submodule deinit -f --all && texliveonfly *.tex"
+    //"postCreateCommand": "git submodule update --init --recursive && cp -r .style/* ./ && git submodule deinit -f --all && texliveonfly *.tex"
+    "postCreateCommand": "texliveonfly *.tex"
 }
