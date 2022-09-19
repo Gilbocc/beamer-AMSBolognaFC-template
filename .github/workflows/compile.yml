@@ -5,7 +5,7 @@ on:
       - main
       - master
 env:
-  LATEX_ROOT: COMMA2022-CONFLICTARG-TALK
+  LATEX_ROOT: AMSBolognaFC-template
 jobs:
   compile:
     runs-on: ubuntu-latest
