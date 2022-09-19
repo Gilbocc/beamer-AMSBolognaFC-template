@@ -5,7 +5,7 @@ on:
       - main
       - master
 env:
-  LATEX_ROOT: AMSBolognaFC-template
+  LATEX_ROOT: COMMA2022-CONFLICTARG-TALK
 jobs:
   compile:
     runs-on: ubuntu-latest
@@ -20,18 +20,24 @@ jobs:
         with:
           root_file: ${{ env.LATEX_ROOT }}.tex
           args: -pdf -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape
+      
+      - name: Bump version
+        id: bump-version
+        uses: anothrNick/github-tag-action@1.46.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: true
           
-      - name: Get Version
-        id: get-version
-        run: echo "::set-output name=version::$(cat *.tex | python .github/scripts/compute-version.py)"
+      - name: Get Time
+        id: current-time
+        run: echo "::set-output name=time::$(date +'%Y-%m-%dT%H%M%S')"
         
       - name: Create Release
         id: create-release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: '${{ steps.get-version.outputs.version }}'
+          token:  ${{ secrets.GITHUB_TOKEN }}
+          tag_name: '${{ steps.bump-version.outputs.new_tag }}-${{ steps.current-time.outputs.time }}'
           
       - name: Upload Release Asset
         id: upload-release-asset
@@ -41,5 +47,5 @@ jobs:
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ./${{ env.LATEX_ROOT }}.pdf
-          asset_name: ${{ env.LATEX_ROOT }}-${{ steps.get-version.outputs.version }}.pdf
+          asset_name: ${{ env.LATEX_ROOT }}-${{ steps.bump-version.outputs.new_tag }}-${{ steps.current-time.outputs.time }}.pdf
           asset_content_type: application/pdf
